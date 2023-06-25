@@ -13,6 +13,18 @@ def dist(a, b):
     return distance
 
 
+# Calculate the distances between each dataset observation
+def calculateDistances(inputDataFrame):
+    distances = []
+    for i in inputDataFrame.index:
+        i_distances = []
+        for j in inputDataFrame.index:
+            i_distances.append(dist([inputDataFrame['sepall'][i], inputDataFrame['sepalw'][i], inputDataFrame['petall'][i], inputDataFrame['petalw'][i]],
+                                    [inputDataFrame['sepall'][j], inputDataFrame['sepalw'][j], inputDataFrame['petall'][j], inputDataFrame['petalw'][j]]))
+        distances.append(i_distances)
+    return distances
+
+
 def NormalizeValues(csvFile):
     inputData = pd.read_csv(csvFile)
     inputDf = pd.DataFrame(inputData)
@@ -31,17 +43,7 @@ def NormalizeValues(csvFile):
 def ENN(normCsvFile, k):
     inputData = pd.read_csv(normCsvFile)
     inputDf = pd.DataFrame(inputData)
-
-    # Calculate the distances
-    distances = []
-
-    for i in inputDf.index:
-        i_distances = []
-        for j in inputDf.index:
-            i_distances.append(dist([inputDf['sepall'][i], inputDf['sepalw'][i], inputDf['petall'][i], inputDf['petalw'][i]],
-                                    [inputDf['sepall'][j], inputDf['sepalw'][j], inputDf['petall'][j], inputDf['petalw'][j]]))
-        distances.append(i_distances)
-
+    distances = calculateDistances(inputDf)
     print(distances)
 
 
