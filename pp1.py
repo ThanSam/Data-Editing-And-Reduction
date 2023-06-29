@@ -25,6 +25,18 @@ def calculateDistances(inputDataFrame):
     return distances
 
 
+# Returns the K-Nearest Neighbors indexes in a list
+def findKNearestNeighbors(distances, K):
+    distancesDict = {}
+    for i in range(0, len(distances)):
+        distancesDict[i] = distances[i]
+    distancesDict = sorted(distancesDict.items(), key=lambda item: item[1])
+    NearestNeighbors = []
+    for i in range(1, K+1):
+        NearestNeighbors.append(distancesDict[i][0])
+    return NearestNeighbors
+
+
 def NormalizeValues(csvFile):
     inputData = pd.read_csv(csvFile)
     inputDf = pd.DataFrame(inputData)
@@ -40,12 +52,15 @@ def NormalizeValues(csvFile):
     return normDf.to_csv("normalized.csv", index=False)  # Write the result in a csv file.
 
 
-def ENN(normCsvFile, k):
+def ENN(normCsvFile, K):
     inputData = pd.read_csv(normCsvFile)
     inputDf = pd.DataFrame(inputData)
     distances = calculateDistances(inputDf)
-    print(distances)
+    for i in range(len(distances)):  # For each observation...
+        findKNearestNeighbors(distances[i], K)
 
+
+# Main Program
 
 NormalizeValues('iris.csv')
-ENN('normalized.csv', 3)  # Define: N = 3
+ENN('normalized.csv', 3)  # Define: N = 3 (default For ENN)
