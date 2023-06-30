@@ -6,6 +6,7 @@ import math
 
 # Calculate the Euclidean distance between 2 multidimensional points
 def dist(a, b):
+
     distance = 0
     for i in range(0, len(a)):
         distance_i = a[i] - b[i]
@@ -15,6 +16,7 @@ def dist(a, b):
 
 # Calculate the distances between each dataset observation
 def calculateDistances(inputDataFrame):
+
     distances = []
     for i in inputDataFrame.index:
         i_distances = []
@@ -27,6 +29,7 @@ def calculateDistances(inputDataFrame):
 
 # Returns the K-Nearest Neighbors indexes in a list
 def findKNearestNeighbors(distances, K):
+
     distancesDict = {}
     for i in range(0, len(distances)):
         distancesDict[i] = distances[i]
@@ -37,7 +40,29 @@ def findKNearestNeighbors(distances, K):
     return NearestNeighbors
 
 
+def findMajorityClass(ObservationsDf, NearestNeighbors):
+
+    IrisSetosaCnt = IrisVersicolorCnt = IrisVirginicaCnt = 0
+
+    for i in NearestNeighbors:
+        if ObservationsDf.loc[i, "class"] == 'Iris-setosa':
+            IrisSetosaCnt += 1
+        elif ObservationsDf.loc[i, "class"] == 'Iris-versicolor':
+            IrisVersicolorCnt += 1
+        else:
+            IrisVirginicaCnt += 1
+
+    MajorityClassCnt = max(IrisSetosaCnt, IrisVersicolorCnt, IrisVirginicaCnt)
+    if MajorityClassCnt == IrisSetosaCnt:
+        return 'Iris-setosa'
+    elif MajorityClassCnt == IrisVersicolorCnt:
+        return 'Iris-versicolor'
+    else:
+        return 'Iris-virginica'
+
+
 def NormalizeValues(csvFile):
+
     inputData = pd.read_csv(csvFile)
     inputDf = pd.DataFrame(inputData)
     normDf = pd.DataFrame(columns=['sepall', 'sepalw', 'petall', 'petalw', 'class'])
@@ -53,11 +78,13 @@ def NormalizeValues(csvFile):
 
 
 def ENN(normCsvFile, K):
+
     inputData = pd.read_csv(normCsvFile)
     inputDf = pd.DataFrame(inputData)
     distances = calculateDistances(inputDf)
     for i in range(len(distances)):  # For each observation...
-        findKNearestNeighbors(distances[i], K)
+        NearestNeighbors = findKNearestNeighbors(distances[i], K)
+        print(findMajorityClass(inputDf, NearestNeighbors))
 
 
 # Main Program
