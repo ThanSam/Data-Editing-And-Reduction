@@ -66,7 +66,7 @@ def NormalizeValues(csvFile):
     inputData = pd.read_csv(csvFile)
     inputDf = pd.DataFrame(inputData)
     normDf = pd.DataFrame(columns=['sepall', 'sepalw', 'petall', 'petalw', 'class'])
-    # Normalize the data row by row and store them in a Dataframe.
+    # Normalize the data row by row and store them in a Dataframe
     for row in inputDf.index.values:
         row_array = np.array(inputDf[['sepall', 'sepalw', 'petall', 'petalw']].iloc[row].values)
         normalized_data = preprocessing.normalize([row_array])
@@ -74,7 +74,7 @@ def NormalizeValues(csvFile):
                                     inputDf[['class']].iloc[row].values)  # Append 'class' column that doesn't change
         normDf.loc[row] = [normalizedArray[0], normalizedArray[1], normalizedArray[2], normalizedArray[3],
                            normalizedArray[4]]
-    return normDf.to_csv("normalized.csv", index=False)  # Write the result in a csv file.
+    return normDf.to_csv("normalized.csv", index=False)  # Write the result in a csv file
 
 
 def ENN(normCsvFile, K):
@@ -82,9 +82,13 @@ def ENN(normCsvFile, K):
     inputData = pd.read_csv(normCsvFile)
     inputDf = pd.DataFrame(inputData)
     distances = calculateDistances(inputDf)
-    for i in range(len(distances)):  # For each observation...
+    deletedIndexes = []
+    for i in range(len(distances)):  # For each observation of the dataset...
         NearestNeighbors = findKNearestNeighbors(distances[i], K)
-        print(findMajorityClass(inputDf, NearestNeighbors))
+        if findMajorityClass(inputDf, NearestNeighbors) != inputData.loc[i, 'class']:
+            deletedIndexes.append(i)
+    inputDf.drop(deletedIndexes, inplace=True)   # Delete the different classes observations
+    inputDf.to_csv("reduced_ENN.csv", index=False)   # Write the result in a csv file
 
 
 # Main Program
