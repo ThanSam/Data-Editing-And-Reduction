@@ -108,7 +108,7 @@ def IB2(normCsvFile):
         tempCondensingSet = pd.concat([condensingSet, tempDf], axis=0, ignore_index=True)
         distances = calculateDistances(tempCondensingSet)
         nearestNeighbor = findKNearestNeighbors(distances[condensingSetIdx], 1)    # Find the nearest neighbor of item (i) in CS (K=1)
-        if trainingSet.loc[i, 'class'] == tempCondensingSet.loc[nearestNeighbor[0], 'class']:
+        if trainingSet.loc[i, 'class'] != tempCondensingSet.loc[nearestNeighbor[0], 'class']:
             condensingSet = tempCondensingSet     # CS <- CS U (i)
             condensingSetIdx += 1
         trainingSet.drop([i], inplace=False)     # TS <- TS - (i)
