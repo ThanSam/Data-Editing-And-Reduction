@@ -17,12 +17,15 @@ def dist(a, b):
 # Calculate the distances between each dataset observation
 def calculateDistances(inputDataFrame):
 
+    columns = list(inputDataFrame.columns)
+    columns.pop()  # Remove the 'class' column from calculating distances
     distances = []
+    # for col in inputDataFrame.index:
     for i in inputDataFrame.index:
         i_distances = []
         for j in inputDataFrame.index:
-            i_distances.append(dist([inputDataFrame['sepall'][i], inputDataFrame['sepalw'][i], inputDataFrame['petall'][i], inputDataFrame['petalw'][i]],
-                                    [inputDataFrame['sepall'][j], inputDataFrame['sepalw'][j], inputDataFrame['petall'][j], inputDataFrame['petalw'][j]]))
+            i_distances.append(dist(inputDataFrame[columns[:]].values[i],
+                                    inputDataFrame[columns[:]].values[j]))
         distances.append(i_distances)
     return distances
 
