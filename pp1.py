@@ -9,7 +9,7 @@ def dist(a, b):
 
     distance = 0
     for i in range(0, len(a)):
-        distance_i = a[i] - b[i]
+        distance_i = abs(a[i] - b[i])
         distance += math.sqrt(distance_i * distance_i)
     return distance
 
