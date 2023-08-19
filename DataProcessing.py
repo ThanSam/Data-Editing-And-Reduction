@@ -11,7 +11,7 @@ def NormalizeValues(csvFile):
     normDf = pd.DataFrame(columns=dfColumns)
     # Normalize the data row by row and store them in a Dataframe
     for row in inputDf.index.values:
-        row_array = np.array(inputDf[dfColumns[0:len(dfColumns)-1]].iloc[row].values)
+        row_array = np.array(inputDf[dfColumns[0:len(dfColumns) - 1]].iloc[row].values)
         normalized_data = preprocessing.normalize([row_array])
         normalizedArray = np.append(normalized_data,
                                     inputDf[['class']].iloc[row].values)  # Append 'class' column that doesn't change
@@ -56,25 +56,13 @@ def findKNearestNeighbors(distances, K):
 
 
 def findMajorityClass(ObservationsDf, NearestNeighbors):
-    IrisSetosaCnt = IrisVersicolorCnt = IrisVirginicaCnt = 0
+    classes = ObservationsDf['class'].unique()  # Keep the different classes
+    counter = [0] * len(classes)
 
     for i in NearestNeighbors:
-        if ObservationsDf.loc[i, "class"] == 'Iris-setosa':
-            IrisSetosaCnt += 1
-        elif ObservationsDf.loc[i, "class"] == 'Iris-versicolor':
-            IrisVersicolorCnt += 1
-        else:
-            IrisVirginicaCnt += 1
+        for cnt in range(len(classes)):
+            if ObservationsDf.loc[i, 'class'] == classes[cnt]:
+                counter[cnt] += 1
 
-    MajorityClassCnt = max(IrisSetosaCnt, IrisVersicolorCnt, IrisVirginicaCnt)
-    if MajorityClassCnt == IrisSetosaCnt:
-        return 'Iris-setosa'
-    elif MajorityClassCnt == IrisVersicolorCnt:
-        return 'Iris-versicolor'
-    else:
-        return 'Iris-virginica'
-
-
-
-
-
+    majorityClassIndex = counter.index(max(counter))
+    return classes[majorityClassIndex]
